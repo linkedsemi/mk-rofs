@@ -1,0 +1,1 @@
+This is making flash ro filesystem as zephyr module.
