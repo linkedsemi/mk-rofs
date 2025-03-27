@@ -11,6 +11,7 @@ if(CONFIG_MK_ROFS)
     COMMAND find ${CMAKE_BINARY_DIR}/configure_file -type f 
             -exec realpath --relative-to=${CMAKE_BINARY_DIR}/configure_file {} \; 
             > ${DEST_DIR}/file_path.txt
+    DEPENDS ${CMAKE_BINARY_DIR}/zephyr/zephyr.bin
     COMMENT "Generating configure file path."
     VERBATIM
   )
@@ -18,6 +19,8 @@ if(CONFIG_MK_ROFS)
   add_custom_command(
     OUTPUT ${DEST_DIR}/flash_rofs.bin
     COMMAND ${TOOL_PATH}/mklittlefs -c ${FILES_RELATIVE_PATH} -T ${DEST_DIR}/file_path.txt -b ${FLASH_BLK_SIZE} -p ${FLASH_PAGE_SIZE} -s ${FLASH_IMG_SIZE} ${DEST_DIR}/flash_rofs.bin
+    DEPENDS ${TOOL_PATH}/mklittlefs.bin
+    DEPENDS ${DEST_DIR}/file_path.txt
     COMMENT "Generating filesystem bin file."
     VERBATIM
   )
@@ -27,5 +30,4 @@ if(CONFIG_MK_ROFS)
     ${DEST_DIR}/file_path.txt
     ${DEST_DIR}/flash_rofs.bin)
 
-  add_dependencies(rofs_bin app)
 endif()

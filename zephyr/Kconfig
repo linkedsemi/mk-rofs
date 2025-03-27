@@ -1,4 +1,5 @@
 config MK_ROFS
     bool "make flash ro filesystem bin"
     default n
+    select TOOLS_MKLFS
     
