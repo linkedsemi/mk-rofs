@@ -6,6 +6,8 @@ if(CONFIG_MK_ROFS)
   set(FLASH_PAGE_SIZE 256)
   math(EXPR FLASH_IMG_SIZE "3 * 1024 * 1024")
 
+  file(MAKE_DIRECTORY ${FILES_RELATIVE_PATH})
+  
   add_custom_command(
     OUTPUT ${DEST_DIR}/file_path.txt
     COMMAND find ${CMAKE_BINARY_DIR}/configure_file -type f 
