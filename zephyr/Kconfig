@@ -2,4 +2,12 @@ config MK_ROFS
     bool "make flash ro filesystem bin"
     default n
     # select TOOLS_MKLFS
+
+config MK_ROFS_BUILD_OUTPUT_ZSTD
+    bool "MK_ROFS_BUILD_OUTPUT_ZSTD"
+    default y
+
+config MK_ROFS_BUILD_OUTPUT_GZIP
+    bool "MK_ROFS_BUILD_OUTPUT_GZIP"
+    default y
     
