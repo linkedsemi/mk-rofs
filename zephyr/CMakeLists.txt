@@ -27,9 +27,51 @@ if(CONFIG_MK_ROFS)
     VERBATIM
   )
 
+  if(CONFIG_MK_ROFS_BUILD_OUTPUT_ZSTD)
+    # Compress the rofs binary with zstd if the tool is available on the system
+    # (-k keeps the original .bin, which is still needed by downstream tools)
+    find_program(ZSTD_EXECUTABLE zstd)
+    if(ZSTD_EXECUTABLE)
+      add_custom_command(
+        OUTPUT ${DEST_DIR}/flash_rofs.bin.zst
+        COMMAND ${ZSTD_EXECUTABLE} -f -22 --ultra --zstd=windowLog=19 --check -k ${DEST_DIR}/flash_rofs.bin
+        DEPENDS ${DEST_DIR}/flash_rofs.bin
+        COMMENT "Compressing filesystem bin to ${DEST_DIR}/flash_rofs.bin.zst."
+        VERBATIM
+      )
+    else()
+      message(WARNING "zstd not found, skip compressing ${DEST_DIR}/flash_rofs.bin")
+    endif()
+  endif()
+
+  if(CONFIG_MK_ROFS_BUILD_OUTPUT_GZIP)
+    # Compress the rofs binary with gzip if the tool is available on the system
+    find_program(GZIP_EXECUTABLE gzip)
+    if(GZIP_EXECUTABLE)
+      add_custom_command(
+        OUTPUT ${DEST_DIR}/flash_rofs.bin.gz
+        COMMAND ${GZIP_EXECUTABLE} -f -9 -k ${DEST_DIR}/flash_rofs.bin
+        DEPENDS ${DEST_DIR}/flash_rofs.bin
+        COMMENT "Compressing filesystem bin to ${DEST_DIR}/flash_rofs.bin.gz."
+        VERBATIM
+      )
+    else()
+      message(WARNING "gzip not found, skip compressing ${DEST_DIR}/flash_rofs.bin")
+    endif()
+  endif()
+
+  set(ROFS_COMPRESS_DEPS)
+  if(CONFIG_MK_ROFS_BUILD_OUTPUT_ZSTD AND ZSTD_EXECUTABLE)
+    list(APPEND ROFS_COMPRESS_DEPS ${DEST_DIR}/flash_rofs.bin.zst)
+  endif()
+  if(CONFIG_MK_ROFS_BUILD_OUTPUT_GZIP AND GZIP_EXECUTABLE)
+    list(APPEND ROFS_COMPRESS_DEPS ${DEST_DIR}/flash_rofs.bin.gz)
+  endif()
+
   add_custom_target(rofs_bin ALL
-    DEPENDS 
+    DEPENDS
     ${DEST_DIR}/file_path.txt
-    ${DEST_DIR}/flash_rofs.bin)
+    ${DEST_DIR}/flash_rofs.bin
+    ${ROFS_COMPRESS_DEPS})
 
 endif()
