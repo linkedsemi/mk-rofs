@@ -18,12 +18,24 @@ if(CONFIG_MK_ROFS)
     VERBATIM
   )
 
+#   add_custom_command(
+#     OUTPUT ${DEST_DIR}/flash_rofs.bin
+#     COMMAND ${TOOL_PATH}/mklittlefs -c ${FILES_RELATIVE_PATH} -T ${DEST_DIR}/file_path.txt -b ${FLASH_BLK_SIZE} -p ${FLASH_PAGE_SIZE} -s ${FLASH_IMG_SIZE} ${DEST_DIR}/flash_rofs.bin
+#     DEPENDS ${TOOL_PATH}/mklittlefs
+#     DEPENDS ${DEST_DIR}/file_path.txt
+#     COMMENT "Generating filesystem bin in ${DEST_DIR}/flash_rofs.bin."
+#     VERBATIM
+#   )
+
   add_custom_command(
     OUTPUT ${DEST_DIR}/flash_rofs.bin
-    COMMAND ${TOOL_PATH}/mklittlefs -c ${FILES_RELATIVE_PATH} -T ${DEST_DIR}/file_path.txt -b ${FLASH_BLK_SIZE} -p ${FLASH_PAGE_SIZE} -s ${FLASH_IMG_SIZE} ${DEST_DIR}/flash_rofs.bin
-    DEPENDS ${TOOL_PATH}/mklittlefs
-    DEPENDS ${DEST_DIR}/file_path.txt
-    COMMENT "Generating filesystem bin in ${DEST_DIR}/flash_rofs.bin."
+    COMMAND ${TOOL_PATH}/mkfatfs
+            -c ${FILES_RELATIVE_PATH}
+            -s ${FLASH_IMG_SIZE}
+            -t fatfs
+            ${DEST_DIR}/flash_rofs.bin
+    DEPENDS ${TOOL_PATH}/mkfatfs
+    COMMENT "Generating FATFS image in ${DEST_DIR}/flash_rofs.bin."
     VERBATIM
   )
 
