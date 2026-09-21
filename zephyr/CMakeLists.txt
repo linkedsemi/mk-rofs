@@ -35,6 +35,7 @@ if(CONFIG_MK_ROFS)
             -t fatfs
             ${DEST_DIR}/flash_rofs.bin
     DEPENDS ${TOOL_PATH}/mkfatfs
+    DEPENDS ${DEST_DIR}/file_path.txt
     COMMENT "Generating FATFS image in ${DEST_DIR}/flash_rofs.bin."
     VERBATIM
   )
